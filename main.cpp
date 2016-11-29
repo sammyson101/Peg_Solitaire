@@ -1,31 +1,34 @@
 /*
-	THE BOARD
-0,0 0,1 0,2 0,3 0,4     0, 2, 5, 9, 14
-1,0 1,1 1,2 1,3         1, 4, 8, 13
-2,0 2,1 2,2 		        3, 7, 12,
-3,0 3,1			            6, 11
-4,0			                10
 
-	directions you can jump  
+	THE BOARD
+	  0
+	 1 2
+       3  4  5
+     6  7  8  9
+   10 11 12 13 14
+
+       ROW/COLUMN SET UP       PEG NUMBER
+	0,0 0,1 0,2 0,3 0,4     0, 2, 5, 9, 14
+	1,0 1,1 1,2 1,3         1, 4, 8, 13
+	2,0 2,1 2,2 	 	3, 7, 12,
+	3,0 3,1			6, 11
+	4,0	                10
+
+	Anytime a direction is referenced in comments, it is in terms of the above sideways boards
+
+	Directions you can jump  
 	N S 
 	E W
 	NE SW
 
-	directions you cannot jump
+	Directions you cannot jump
 	NW SE
 
-	when jumping your one away in a valid direction must be full
+	When jumping the peg one away in a valid direction must be full
 				&&
-	your two away in the same valid direction must be empty
-
-DIRECTIONS ORDER TO CHECK
-N S E W NE SE
-
-Anytime a direction is referenced it is in terms of the above board
-
+	The peg two away in the same valid direction must be empty
 */	
 
-/* BEGIN PROGRAM */
 
 #include <vector>
 #include <iostream>
@@ -36,14 +39,15 @@ Anytime a direction is referenced it is in terms of the above board
 using namespace std;
 
 
-//struct for pegs 
+/*Structure for pegs*/ 
 struct Peg {
 	int value;
 	int status;
+	
 };
 
 
-/*Switch a spot from empty to full or vice versa*/
+/*Flip a spot on the board from empty to full or vice versa*/
 void switchPeg(struct Peg &peg){
 	if(peg.status == 0){
 		peg.status = 1;
@@ -55,7 +59,7 @@ void switchPeg(struct Peg &peg){
 }
 
 
-	/*Switch statement checking playerStart to start game with that peg removed*/
+	/*Switch statement checking playerStart variable that gets passed during program call. playerStart represents the peg number that will be empty to start the game*/
 void startGame(vector<vector<struct Peg> > &game, int playerStart){
 	switch(playerStart){
 		case 0:
@@ -111,9 +115,8 @@ void startGame(vector<vector<struct Peg> > &game, int playerStart){
 
 
 
-/*Print the current state of the board*/
+/*Print the current state of the board with 1's and 0's to represent peg placements*/
 void printBoard(vector<vector<struct Peg> > game){
-	
 	printf("         %d\n", game[0][0].status);
 	printf("       %d   %d\n", game[1][0].status, game[0][1].status);	
 	printf("     %d   %d   %d\n", game[2][0].status, game[1][1].status, game[0][2].status);
@@ -124,7 +127,7 @@ void printBoard(vector<vector<struct Peg> > game){
 printf("----------------------\n");
 }
 
-/*Count number of pegs(1's) in the game*/
+/*Count and return the number of pegs(1's) in the board*/
 int countPegs(vector<vector<struct Peg> > game){	
 	int i = 0;
 	int j = 0;
@@ -144,7 +147,7 @@ int countPegs(vector<vector<struct Peg> > game){
 
 
 /*Recursive function to solve game*/
-//check in this order N S E W NE SE
+/*Cases in this function represent what column/row the peg movement is starting from */
 
 void solveGame(vector<vector<struct Peg> > game,  vector<vector<vector<struct Peg> > > &boardList, bool &success)
 {
@@ -154,10 +157,8 @@ void solveGame(vector<vector<struct Peg> > game,  vector<vector<vector<struct Pe
 	//push current board onto the moveList
 	boardList.push_back(game);
 	
-	//if (pegs == 1) end game. success = true
+	//if (pegs == 1) end game by setting success to true
 	//success being true will break through all recursive calls of solveGame as unwind happens
-	
-
 	if(countPegs(game) == 1){
 		success = true;
 				
@@ -414,17 +415,6 @@ int main(int argc, char** argv){
 		printf("Argv[1] must be between 0 and 14 inclusively\n");
 		exit(1);
 	}
-
-	/*
-	char* printBoard;
-	sscanf(argv[2], "%s", printBoard);
-	if(printBoard == "true" || printBoard == false){
-		;
-	}	
-	else{
-		printf("argv[2] must be either true or false\n");
-	}
-*/
 
 	//boardlist to be printed at the end showing winning path	
 	vector<vector<vector<struct Peg> > > boardList;
